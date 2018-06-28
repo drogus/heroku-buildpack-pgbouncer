@@ -57,6 +57,8 @@ log_disconnections = ${PGBOUNCER_LOG_DISCONNECTIONS:-1}
 log_pooler_errors = ${PGBOUNCER_LOG_POOLER_ERRORS:-1}
 stats_period = ${PGBOUNCER_STATS_PERIOD:-60}
 ignore_startup_parameters = ${PGBOUNCER_IGNORE_STARTUP_PARAMETERS}
+admin_users = pgbouncer
+stats_users = pgbouncer
 
 [databases]
 EOFEOF
@@ -86,8 +88,6 @@ protocol = pgsql
 accept  = /tmp/.s.PGSQL.610${n}
 connect = $DB_HOST:$DB_PORT
 retry = ${PGBOUNCER_CONNECTION_RETRY:-"no"}
-admin_users = pgbouncer
-stats_users = pgbouncer
 EOFEOF
 
   cat >> /app/vendor/pgbouncer/users.txt << EOFEOF
