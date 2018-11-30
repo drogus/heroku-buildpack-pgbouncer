@@ -3,12 +3,17 @@
 POSTGRES_URLS=${PGBOUNCER_URLS:-DATABASE_URL}
 POOL_MODE=${PGBOUNCER_POOL_MODE:-transaction}
 SERVER_RESET_QUERY=${PGBOUNCER_SERVER_RESET_QUERY}
+SERVER_RESET_QUERY_ALWAYS=${PGBOUNCER_SERVER_RESET_QUERY_ALWAYS}
 n=1
 
 # if the SERVER_RESET_QUERY and pool mode is session, pgbouncer recommends DISCARD ALL be the default
 # http://pgbouncer.projects.pgfoundry.org/doc/faq.html#_what_should_my_server_reset_query_be
 if [ -z "${SERVER_RESET_QUERY}" ] &&  [ "$POOL_MODE" == "session" ]; then
   SERVER_RESET_QUERY="DISCARD ALL;"
+fi
+
+if [ -z "${SERVER_RESET_QUERY_ALWAYS}" ]; then
+  SERVER_RESET_QUERY_ALWAYS=0
 fi
 
 cat >> /app/vendor/pgbouncer/pgbouncer.ini << EOFEOF
@@ -27,6 +32,7 @@ server_tls_ciphers = HIGH:!ADH:!AECDH:!LOW:!EXP:!MD5:!3DES:!SRP:!PSK:@STRENGTH
 ;   statement    - after statement finishes
 pool_mode = ${POOL_MODE}
 server_reset_query = ${SERVER_RESET_QUERY}
+server_reset_query_always = ${SERVER_RESET_QUERY_ALWAYS}
 max_client_conn = ${PGBOUNCER_MAX_CLIENT_CONN:-100}
 default_pool_size = ${PGBOUNCER_DEFAULT_POOL_SIZE:-1}
 min_pool_size = ${PGBOUNCER_MIN_POOL_SIZE:-0}
